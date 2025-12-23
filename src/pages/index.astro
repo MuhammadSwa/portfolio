@@ -1,16 +1,88 @@
 ---
+import '../styles/global.css';
+import { getCollection } from 'astro:content';
+import CaseGallery from '../components/CaseGallery';
+import HeroSection from '../components/HeroSection.astro';
+import CategoryFilter from '../components/CategoryFilter';
+import StatsSection from '../components/StatsSection.astro';
+import AboutSection from '../components/AboutSection.astro';
+import Footer from '../components/Footer.astro';
 
+const allCases = await getCollection('cases');
+const sortedCases = allCases.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const allCategories = [
+  { id: 'all', name: 'All Cases', icon: '🦷' },
+  { id: 'restorations', name: 'Restorations', icon: '🔧' },
+  { id: 'endodontics', name: 'Endodontics', icon: '🔬' },
+  { id: 'fixed-prosthodontics', name: 'Fixed Prosthodontics', icon: '👑' },
+  { id: 'extractions', name: 'Extractions', icon: '🩹' },
+  { id: 'periodontics', name: 'Periodontics', icon: '🌿' },
+  { id: 'other', name: 'Other', icon: '📋' },
+];
+
+// Serialize images for client components - image() schema returns ImageMetadata objects
+const casesData = sortedCases.map(c => ({
+  id: c.id,
+  ...c.data,
+  images: c.data.images.map((img: any) => ({
+    src: typeof img.src === 'string' ? img.src : img.src.src,
+    alt: img.alt,
+    stage: img.stage,
+  })),
+  date: c.data.date.toISOString(),
+}));
+
+// Calculate stats
+const totalCases = allCases.length;
+const categoryStats = allCategories.slice(1).map(cat => ({
+  ...cat,
+  count: allCases.filter(c => c.data.category === cat.id).length
+}));
+
+// Filter categories with at least one case for the gallery
+const categoriesWithCases = [
+  allCategories[0], // Always include "All Cases"
+  ...allCategories.slice(1).filter(cat => 
+    allCases.some(c => c.data.category === cat.id)
+  )
+];
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Professional dental portfolio showcasing clinical cases in restorations, endodontics, and fixed prosthodontics" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Dr. Zahrawi | Dental Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased">
+    <HeroSection />
+    <StatsSection totalCases={totalCases} categoryStats={categoryStats} />
+    
+    <main id="cases" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif font-semibold text-slate-100 mb-4">
+          Clinical Case Gallery
+        </h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">
+          Browse through documented cases showcasing various dental procedures with detailed notes on techniques, challenges, and outcomes.
+        </p>
+      </div>
+      
+      <CaseGallery 
+        client:load 
+        cases={casesData} 
+        categories={categoriesWithCases}
+      />
+    </main>
+    
+    <AboutSection />
+    <Footer />
+  </body>
 </html>

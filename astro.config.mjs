@@ -1,5 +1,17 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
+import tailwindcss from '@tailwindcss/vite';
+import solidJs from '@astrojs/solid-js';
+import mdx from '@astrojs/mdx';
+
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  site: 'https://muhammadswa.github.io',
+  base: '/portfolio',
+  vite: {
+    plugins: [tailwindcss()]
+  },
+
+  integrations: [solidJs(), mdx()]
+});

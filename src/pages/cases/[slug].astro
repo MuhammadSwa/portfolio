@@ -1,0 +1,225 @@
+---
+import '../../styles/global.css';
+import { getCollection, render } from 'astro:content';
+import CaseDetail from '../../components/CaseDetail';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('cases');
+  return cases.map((caseEntry) => ({
+    params: { slug: caseEntry.id },
+    props: { caseEntry },
+  }));
+}
+
+const { caseEntry } = Astro.props;
+const { Content } = await render(caseEntry);
+
+// Serialize images - image() schema returns ImageMetadata objects with src property
+const serializedImages = caseEntry.data.images.map((img: any) => ({
+  src: typeof img.src === 'string' ? img.src : img.src.src,
+  alt: img.alt,
+  stage: img.stage,
+}));
+
+const caseData = {
+  ...caseEntry.data,
+  images: serializedImages,
+  date: caseEntry.data.date.toISOString(),
+  id: caseEntry.id,
+};
+
+const categoryLabels: Record<string, string> = {
+  'restorations': 'Restorations',
+  'endodontics': 'Endodontics',
+  'fixed-prosthodontics': 'Fixed Prosthodontics',
+  'extractions': 'Extractions',
+  'periodontics': 'Periodontics',
+  'other': 'Other',
+};
+
+const outcomeColors: Record<string, string> = {
+  'excellent': 'bg-emerald-900/50 text-emerald-300 border border-emerald-700',
+  'good': 'bg-blue-900/50 text-blue-300 border border-blue-700',
+  'satisfactory': 'bg-amber-900/50 text-amber-300 border border-amber-700',
+  'needs-follow-up': 'bg-orange-900/50 text-orange-300 border border-orange-700',
+};
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={`Dental case: ${caseEntry.data.title}`} />
+    <title>{caseEntry.data.title} | Dr. Zahrawi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased">
+    <!-- Navigation -->
+    <nav class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <a href="/" class="flex items-center gap-2 text-slate-200 hover:text-teal-400 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span class="font-medium">Back to Portfolio</span>
+          </a>
+          <span class="text-sm text-slate-400">
+            {categoryLabels[caseEntry.data.category]}
+          </span>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- Case Header -->
+      <header class="mb-12">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <span class="px-3 py-1 bg-teal-900/50 text-teal-300 border border-teal-700 rounded-full text-sm font-medium">
+            {categoryLabels[caseEntry.data.category]}
+          </span>
+          {caseEntry.data.outcome && (
+            <span class={`px-3 py-1 rounded-full text-sm font-medium ${outcomeColors[caseEntry.data.outcome]}`}>
+              {caseEntry.data.outcome.charAt(0).toUpperCase() + caseEntry.data.outcome.slice(1).replace('-', ' ')}
+            </span>
+          )}
+          {caseEntry.data.featured && (
+            <span class="px-3 py-1 bg-amber-900/50 text-amber-300 border border-amber-700 rounded-full text-sm font-medium">
+              ⭐ Featured
+            </span>
+          )}
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-serif font-semibold text-slate-100 mb-4">
+          {caseEntry.data.title}
+        </h1>
+        
+        <div class="flex flex-wrap gap-4 text-sm text-slate-400">
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {caseEntry.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </span>
+          {caseEntry.data.toothNumber && (
+            <span class="flex items-center gap-1">
+              🦷 Tooth #{caseEntry.data.toothNumber}
+            </span>
+          )}
+          {caseEntry.data.patientAge && caseEntry.data.patientGender && (
+            <span class="flex items-center gap-1">
+              👤 {caseEntry.data.patientAge}yo {caseEntry.data.patientGender}
+            </span>
+          )}
+        </div>
+      </header>
+
+      <!-- Image Gallery -->
+      <CaseDetail client:load caseData={caseData} />
+
+      <!-- Case Information Grid -->
+      <div class="grid md:grid-cols-2 gap-6 mb-12">
+        {caseEntry.data.chiefComplaint && (
+          <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">Chief Complaint</h3>
+            <p class="text-slate-200">{caseEntry.data.chiefComplaint}</p>
+          </div>
+        )}
+        
+        {caseEntry.data.diagnosis && (
+          <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">Diagnosis</h3>
+            <p class="text-slate-200">{caseEntry.data.diagnosis}</p>
+          </div>
+        )}
+        
+        <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
+          <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">Treatment</h3>
+          <p class="text-slate-200">{caseEntry.data.treatment}</p>
+        </div>
+        
+        {caseEntry.data.materials && caseEntry.data.materials.length > 0 && (
+          <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">Materials Used</h3>
+            <ul class="space-y-1">
+              {caseEntry.data.materials.map((material: string) => (
+                <li class="text-slate-200 flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
+                  {material}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      <!-- Difficulties Section -->
+      {caseEntry.data.difficulties && caseEntry.data.difficulties.length > 0 && (
+        <div class="bg-amber-900/30 rounded-xl p-6 mb-8 border border-amber-700">
+          <h3 class="text-lg font-semibold text-amber-300 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Challenges & Difficulties
+          </h3>
+          <ul class="space-y-2">
+            {caseEntry.data.difficulties.map((difficulty: string) => (
+              <li class="text-amber-200 flex items-start gap-2">
+                <span class="mt-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full flex-shrink-0"></span>
+                {difficulty}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <!-- Learnings Section -->
+      {caseEntry.data.learnings && (
+        <div class="bg-emerald-900/30 rounded-xl p-6 mb-8 border border-emerald-700">
+          <h3 class="text-lg font-semibold text-emerald-300 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            Key Learnings
+          </h3>
+          <p class="text-emerald-200">{caseEntry.data.learnings}</p>
+        </div>
+      )}
+
+      <!-- Follow-up -->
+      {caseEntry.data.followUp && (
+        <div class="bg-blue-900/30 rounded-xl p-6 mb-8 border border-blue-700">
+          <h3 class="text-lg font-semibold text-blue-300 mb-2 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Follow-up Plan
+          </h3>
+          <p class="text-blue-200">{caseEntry.data.followUp}</p>
+        </div>
+      )}
+
+      <!-- Case Notes (Markdown Content) -->
+      <div class="bg-slate-800 rounded-xl p-8 shadow-sm border border-slate-700 prose max-w-none">
+        <Content />
+      </div>
+
+      <!-- Tags -->
+      {caseEntry.data.tags && caseEntry.data.tags.length > 0 && (
+        <div class="mt-8 flex flex-wrap gap-2">
+          {caseEntry.data.tags.map((tag: string) => (
+            <span class="px-3 py-1 bg-slate-800 text-slate-300 border border-slate-700 rounded-full text-sm">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </main>
+    
+    <Footer />
+  </body>
+</html>
