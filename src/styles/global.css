@@ -1,24 +1,25 @@
 @import "tailwindcss";
 
 /* Custom CSS Variables */
-@theme {
-  --font-family-serif: 'Playfair Display', serif;
-  --font-family-sans: 'Inter', sans-serif;
+:root {
+  --font-family-serif: var(--font-playfair-display, 'Playfair Display', serif);
+  --font-family-sans: var(--font-inter, 'Inter', sans-serif);
 }
 
 /* Base Styles */
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter, 'Inter', sans-serif);
   background-color: #0f172a;
   color: #e2e8f0;
 }
 
 .font-serif {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-playfair-display, 'Playfair Display', serif);
 }
 
 /* Prose Styles for Markdown Content */
@@ -29,7 +30,7 @@ body {
 
 .prose h2 {
   color: #f1f5f9;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-playfair-display, 'Playfair Display', serif);
   font-size: 1.5rem;
   font-weight: 600;
   margin-top: 2rem;

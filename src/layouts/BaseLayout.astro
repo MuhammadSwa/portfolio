@@ -1,0 +1,26 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Professional dental portfolio showcasing clinical cases in restorations, endodontics, and fixed prosthodontics" } = Astro.props;
+
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    {/* Fonts are now loaded via Astro experimental fonts API */}
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased">
+    <slot />
+  </body>
+</html>

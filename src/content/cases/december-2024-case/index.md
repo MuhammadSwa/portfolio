@@ -6,10 +6,10 @@ treatment: "Case documentation pending"
 images:
   - src: "./photo1.jpg"
     alt: "Clinical photo 1"
-    stage: "other"
+    stage: "before"
   - src: "./photo2.jpg"
     alt: "Clinical photo 2"
-    stage: "other"
+    stage: "during"
 featured: false
 tags:
   - "december-2024"
