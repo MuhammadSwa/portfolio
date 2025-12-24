@@ -3,10 +3,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, render } from "astro:content";
 import CaseDetail from "../../components/CaseDetail";
 import Footer from "../../components/Footer.astro";
+import { getImage } from "astro:assets";
 
 export async function getStaticPaths() {
   const cases = await getCollection("cases");
-  return cases.map((caseEntry) => ({
+  return cases.map((caseEntry: any) => ({
     params: { slug: caseEntry.id },
     props: { caseEntry },
   }));
@@ -14,10 +15,6 @@ export async function getStaticPaths() {
 
 const { caseEntry } = Astro.props;
 const { Content } = await render(caseEntry);
-
-// Serialize images - image() schema returns ImageMetadata objects with src property
-// Serialize images - image() schema returns ImageMetadata objects with src property
-import { getImage } from "astro:assets";
 
 const serializedImages = await Promise.all(
   caseEntry.data.images.map(async (img: any) => {
@@ -59,90 +56,116 @@ const categoryLabels: Record<string, string> = {
 };
 
 const outcomeColors: Record<string, string> = {
-  excellent: "bg-emerald-900/50 text-emerald-300 border border-emerald-700",
-  good: "bg-blue-900/50 text-blue-300 border border-blue-700",
-  satisfactory: "bg-amber-900/50 text-amber-300 border border-amber-700",
-  "needs-follow-up":
-    "bg-orange-900/50 text-orange-300 border border-orange-700",
+  excellent: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+  good: "text-blue-400 border-blue-500/30 bg-blue-500/10",
+  satisfactory: "text-amber-400 border-amber-500/30 bg-amber-500/10",
+  "needs-follow-up": "text-orange-400 border-orange-500/30 bg-orange-500/10",
 };
+
+// Helper to determine active grid columns based on data presence
+const hasChiefComplaint = !!caseEntry.data.chiefComplaint;
+const hasDiagnosis = !!caseEntry.data.diagnosis;
+const hasTreatment = !!caseEntry.data.treatment;
+const hasMaterials =
+  caseEntry.data.materials && caseEntry.data.materials.length > 0;
+
+const activeInfoCount = [
+  hasChiefComplaint,
+  hasDiagnosis,
+  hasTreatment,
+  hasMaterials,
+].filter(Boolean).length;
 ---
 
 <BaseLayout
-  title={`${caseEntry.data.title} | Dr. Zahrawi`}
+  title={`${caseEntry.data.title} | Dr. Muhammad Atef`}
   description={`Dental case: ${caseEntry.data.title}`}
 >
+  <!-- Background Ambience -->
+  <div class="fixed inset-0 z-0 pointer-events-none">
+    <div
+      class="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-teal-900/10 blur-[150px] rounded-full mix-blend-screen"
+    >
+    </div>
+    <div
+      class="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-indigo-900/10 blur-[150px] rounded-full mix-blend-screen"
+    >
+    </div>
+  </div>
+
   <!-- Navigation -->
   <nav
-    class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50"
+    class="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
         <a
           href={import.meta.env.BASE_URL}
-          class="flex items-center gap-2 text-slate-200 hover:text-teal-400 transition-colors"
+          class="group flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <div
+            class="w-6 h-6 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center group-hover:border-teal-500/50 transition-colors"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-          </svg>
-          <span class="font-medium">Back to Portfolio</span>
+            <svg
+              class="w-3 h-3 transition-transform group-hover:-translate-x-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+          </div>
+          <span class="font-medium tracking-wide text-xs uppercase">Back</span>
         </a>
-        <span class="text-sm text-slate-400">
-          {categoryLabels[caseEntry.data.category]}
-        </span>
+        <div class="flex items-center gap-4">
+          <span
+            class="px-2 py-0.5 text-[10px] font-medium tracking-wider uppercase text-slate-400 border border-white/5 rounded-full bg-white/5"
+          >
+            {categoryLabels[caseEntry.data.category]}
+          </span>
+        </div>
       </div>
     </div>
   </nav>
 
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <!-- Case Header -->
-    <header class="mb-12">
-      <div class="flex flex-wrap items-center gap-3 mb-4">
-        <span
-          class="px-3 py-1 bg-teal-900/50 text-teal-300 border border-teal-700 rounded-full text-sm font-medium"
-        >
-          {categoryLabels[caseEntry.data.category]}
+  <main class="relative z-10 pt-24 pb-16">
+    <!-- Header Section -->
+    <header class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
+      <div
+        class="inline-flex items-center justify-center gap-2 px-2.5 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-medium mb-6"
+      >
+        <span class="relative flex h-1.5 w-1.5">
+          <span
+            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"
+          ></span>
+          <span
+            class="relative inline-flex rounded-full h-1.5 w-1.5 bg-teal-500"
+          ></span>
         </span>
-        {
-          caseEntry.data.outcome && (
-            <span
-              class={`px-3 py-1 rounded-full text-sm font-medium ${outcomeColors[caseEntry.data.outcome]}`}
-            >
-              {caseEntry.data.outcome.charAt(0).toUpperCase() +
-                caseEntry.data.outcome.slice(1).replace("-", " ")}
-            </span>
-          )
-        }
-        {
-          caseEntry.data.featured && (
-            <span class="px-3 py-1 bg-amber-900/50 text-amber-300 border border-amber-700 rounded-full text-sm font-medium">
-              ⭐ Featured
-            </span>
-          )
-        }
+        Case Study
       </div>
 
       <h1
-        class="text-3xl md:text-4xl font-serif font-semibold text-slate-100 mb-4"
+        class="text-3xl md:text-5xl font-serif font-medium text-slate-100 mb-6 leading-tight tracking-tight"
       >
         {caseEntry.data.title}
       </h1>
 
-      <div class="flex flex-wrap gap-4 text-sm text-slate-400">
-        <span class="flex items-center gap-1">
+      <div
+        class="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-400"
+      >
+        <div
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/5"
+        >
           <svg
-            class="w-4 h-4"
+            class="w-3.5 h-3.5 opacity-70"
             fill="none"
-            stroke="currentColor"
             viewBox="0 0 24 24"
+            stroke="currentColor"
           >
             <path
               stroke-linecap="round"
@@ -158,528 +181,357 @@ const outcomeColors: Record<string, string> = {
               day: "numeric",
             })
           }
-        </span>
+        </div>
+
         {
           caseEntry.data.toothNumber && (
-            <span class="flex items-center gap-1">
-              🦷 Tooth #{caseEntry.data.toothNumber}
-            </span>
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/5">
+              <span class="opacity-70">🦷</span>
+              <span>Tooth #{caseEntry.data.toothNumber}</span>
+            </div>
           )
         }
+
         {
-          caseEntry.data.patientAge && caseEntry.data.patientGender && (
-            <span class="flex items-center gap-1">
-              👤 {caseEntry.data.patientAge}yo {caseEntry.data.patientGender}
-            </span>
+          caseEntry.data.outcome && (
+            <div
+              class={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${outcomeColors[caseEntry.data.outcome]}`}
+            >
+              <span>{caseEntry.data.outcome.replace("-", " ")}</span>
+            </div>
           )
         }
       </div>
     </header>
 
-    <!-- Image Gallery -->
-    <CaseDetail client:load caseData={caseData} />
-
-    <!-- Case Information Grid -->
-    <div class="grid md:grid-cols-2 gap-6 mb-12">
-      {
-        caseEntry.data.chiefComplaint && (
-          <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
-            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
-              Chief Complaint
-            </h3>
-            <p class="text-slate-200">{caseEntry.data.chiefComplaint}</p>
-          </div>
-        )
-      }
-
-      {
-        caseEntry.data.diagnosis && (
-          <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
-            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
-              Diagnosis
-            </h3>
-            <p class="text-slate-200">{caseEntry.data.diagnosis}</p>
-          </div>
-        )
-      }
-
-      <div
-        class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700"
-      >
-        <h3
-          class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2"
-        >
-          Treatment
-        </h3>
-        <p class="text-slate-200">{caseEntry.data.treatment}</p>
-      </div>
-
-      {
-        caseEntry.data.materials && caseEntry.data.materials.length > 0 && (
-          <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
-            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
-              Materials Used
-            </h3>
-            <ul class="space-y-1">
-              {caseEntry.data.materials.map((material: string) => (
-                <li class="text-slate-200 flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 bg-teal-500 rounded-full" />
-                  {material}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
+    <!-- Gallery Component -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+      <CaseDetail client:load caseData={caseData} />
     </div>
 
-    <!-- Learnings Section -->
-    {
-      caseEntry.data.learnings && (
-        <div class="bg-emerald-900/30 rounded-xl p-6 mb-8 border border-emerald-700">
-          <h3 class="text-lg font-semibold text-emerald-300 mb-4 flex items-center gap-2">
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-              />
-            </svg>
-            Key Learnings
-          </h3>
-          <p class="text-emerald-200">{caseEntry.data.learnings}</p>
-        </div>
-      )
-    }
+    <!-- Content Area -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {
+        activeInfoCount > 0 && (
+          <div
+            class={`grid grid-cols-1 ${
+              activeInfoCount === 1
+                ? "md:grid-cols-1"
+                : activeInfoCount === 2
+                  ? "md:grid-cols-2"
+                  : activeInfoCount === 3
+                    ? "md:grid-cols-3"
+                    : "md:grid-cols-2 lg:grid-cols-2"
+            } gap-px bg-slate-800/50 border border-slate-800 rounded-xl overflow-hidden mb-12 shadow-xl shadow-black/10 text-sm`}
+          >
+            {/* Chief Complaint */}
+            {hasChiefComplaint && (
+              <div class="bg-slate-900/40 p-5 hover:bg-slate-800/40 transition-colors group">
+                <h3 class="text-[10px] font-bold text-teal-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <svg
+                    class="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                    />
+                  </svg>
+                  Chief Complaint
+                </h3>
+                <p class="text-slate-300 leading-relaxed font-light">
+                  {caseEntry.data.chiefComplaint}
+                </p>
+              </div>
+            )}
 
-    <!-- Follow-up -->
-    {
-      caseEntry.data.followUp && (
-        <div class="bg-blue-900/30 rounded-xl p-6 mb-8 border border-blue-700">
-          <h3 class="text-lg font-semibold text-blue-300 mb-2 flex items-center gap-2">
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Follow-up Plan
-          </h3>
-          <p class="text-blue-200">{caseEntry.data.followUp}</p>
-        </div>
-      )
-    }
+            {/* Diagnosis */}
+            {hasDiagnosis && (
+              <div class="bg-slate-900/40 p-5 hover:bg-slate-800/40 transition-colors group">
+                <h3 class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <svg
+                    class="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  Diagnosis
+                </h3>
+                <p class="text-slate-300 leading-relaxed font-light">
+                  {caseEntry.data.diagnosis}
+                </p>
+              </div>
+            )}
 
-    <!-- Difficulties Section -->
-    {
-      caseEntry.data.difficulties && caseEntry.data.difficulties.length > 0 && (
-        <div class="bg-amber-900/30 rounded-xl p-6 mb-8 border border-amber-700">
-          <h3 class="text-lg font-semibold text-amber-300 mb-4 flex items-center gap-2">
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            Challenges & Difficulties
-          </h3>
-          <ul class="space-y-2">
-            {caseEntry.data.difficulties.map((difficulty: string) => (
-              <li class="text-amber-200 flex items-start gap-2">
-                <span class="mt-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full flex-shrink-0" />
-                {difficulty}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )
-    }
+            {/* Treatment */}
+            {hasTreatment && (
+              <div class="bg-slate-900/40 p-5 hover:bg-slate-800/40 transition-colors group">
+                <h3 class="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <svg
+                    class="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                    />
+                  </svg>
+                  Treatment Plan
+                </h3>
+                <p class="text-slate-300 leading-relaxed font-light">
+                  {caseEntry.data.treatment}
+                </p>
+              </div>
+            )}
 
-    <!-- Case Notes (Markdown Content) -->
-    <div
-      class="bg-slate-800 rounded-xl p-6 md:p-8 shadow-sm border border-slate-700"
-    >
-      <div class="markdown-content">
+            {/* Materials */}
+            {hasMaterials && (
+              <div class="bg-slate-900/40 p-5 hover:bg-slate-800/40 transition-colors group">
+                <h3 class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <svg
+                    class="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                    />
+                  </svg>
+                  Materials
+                </h3>
+                <ul class="space-y-1">
+                  {caseEntry.data.materials.map((m: string) => (
+                    <li class="flex items-start gap-2 text-slate-300 font-light text-sm">
+                      <span class="mt-1.5 w-1 h-1 bg-amber-500 rounded-full shrink-0" />
+                      {m}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      <!-- Markdown Content -->
+      <article class="editorial-content mb-16">
         <Content />
-      </div>
+      </article>
+
+      <!-- Key Insights Section (Learnings, Follow-up, Difficulties) -->
+      {
+        (caseEntry.data.learnings ||
+          (caseEntry.data.difficulties &&
+            caseEntry.data.difficulties.length > 0) ||
+          caseEntry.data.followUp) && (
+          <div class="grid gap-8 border-t border-slate-800 pt-12">
+            {caseEntry.data.learnings && (
+              <div class="relative pl-6 border-l-2 border-emerald-500/50">
+                <h3 class="text-base font-serif text-emerald-400 mb-2 flex items-center gap-2">
+                  Key Learnings
+                </h3>
+                <p class="text-slate-300 leading-relaxed text-sm">
+                  {caseEntry.data.learnings}
+                </p>
+              </div>
+            )}
+
+            {caseEntry.data.difficulties &&
+              caseEntry.data.difficulties.length > 0 && (
+                <div class="relative pl-6 border-l-2 border-amber-500/50">
+                  <h3 class="text-base font-serif text-amber-400 mb-2">
+                    Challenges
+                  </h3>
+                  <ul class="space-y-1">
+                    {caseEntry.data.difficulties.map((d: string) => (
+                      <li class="text-slate-300 flex items-start gap-2 text-sm">
+                        <span class="text-amber-500 mt-1.5">•</span> {d}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+            {caseEntry.data.followUp && (
+              <div class="relative pl-6 border-l-2 border-blue-500/50">
+                <h3 class="text-base font-serif text-blue-400 mb-2">
+                  Follow-up Plan
+                </h3>
+                <p class="text-slate-300 leading-relaxed text-sm">
+                  {caseEntry.data.followUp}
+                </p>
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      {/* Tags */}
+      {
+        caseEntry.data.tags && caseEntry.data.tags.length > 0 && (
+          <div class="mt-12 flex flex-wrap gap-2 justify-center border-t border-slate-800 pt-8">
+            {caseEntry.data.tags.map((tag: string) => (
+              <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-500 rounded-md text-[10px] uppercase tracking-wide">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )
+      }
     </div>
-
-    <!-- Tags -->
-    {
-      caseEntry.data.tags && caseEntry.data.tags.length > 0 && (
-        <div class="mt-8 flex flex-wrap gap-2">
-          {caseEntry.data.tags.map((tag: string) => (
-            <span class="px-3 py-1 bg-slate-800 text-slate-300 border border-slate-700 rounded-full text-sm">
-              #{tag}
-            </span>
-          ))}
-        </div>
-      )
-    }
   </main>
-
   <Footer />
 </BaseLayout>
 
 <style is:global>
-  .markdown-content {
-    color: #e2e8f0;
-    font-size: 1.125rem;
-    line-height: 1.75;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-      Arial, sans-serif;
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #020617;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
   }
 
-  /* Headings with gradient accents */
-  .markdown-content h1,
-  .markdown-content h2,
-  .markdown-content h3,
-  .markdown-content h4,
-  .markdown-content h5,
-  .markdown-content h6 {
-    background: linear-gradient(135deg, #5eead4 0%, #3b82f6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 1em;
-    letter-spacing: -0.02em;
+  /* Editorial Content Styles */
+  .editorial-content {
+    color: #e2e8f0; /* Slate 200 for better contrast */
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.8;
+    max-width: 65ch; /* Optimal reading length */
   }
 
-  .markdown-content h1 {
-    font-size: 2.5rem;
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-  }
-
-  .markdown-content h2 {
-    font-size: 2rem;
-    border-bottom: 2px solid;
-    border-image: linear-gradient(90deg, #5eead4, #3b82f6, transparent) 1;
-    padding-bottom: 0.5rem;
-    margin-top: 2.5rem;
-  }
-
-  .markdown-content h3 {
-    font-size: 1.625rem;
-    margin-top: 2rem;
-  }
-
-  .markdown-content h4 {
-    font-size: 1.375rem;
-  }
-
-  /* Paragraphs with better spacing */
-  .markdown-content p {
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
-  }
-
-  /* Stylish links with hover effects */
-  .markdown-content a {
-    color: #5eead4;
-    text-decoration: none;
-    position: relative;
+  .editorial-content h1,
+  .editorial-content h2,
+  .editorial-content h3 {
+    color: #f8fafc; /* Slate 50 */
+    font-family: var(--font-playfair-display), serif;
     font-weight: 500;
-    transition: color 0.3s ease;
+    margin-top: 2.5em;
+    margin-bottom: 0.8em;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
 
-  .markdown-content a::after {
+  .editorial-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .editorial-content h2 {
+    font-size: 2rem;
+    position: relative;
+    padding-bottom: 0.5em;
+    margin-top: 3em;
+  }
+
+  /* Decorative underline for h2 */
+  .editorial-content h2::after {
     content: "";
     position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: -2px;
     left: 0;
-    background: linear-gradient(90deg, #5eead4, #3b82f6);
-    transform: scaleX(0);
-    transform-origin: bottom right;
-    transition: transform 0.3s ease;
-  }
-
-  .markdown-content a:hover {
-    color: #2dd4bf;
-  }
-
-  .markdown-content a:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-  }
-
-  /* Enhanced lists with custom markers */
-  .markdown-content ul,
-  .markdown-content ol {
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
-    padding-left: 1.75em;
-  }
-
-  .markdown-content li {
-    margin-top: 0.75em;
-    margin-bottom: 0.75em;
-    padding-left: 0.5em;
-  }
-
-  .markdown-content ul > li {
-    position: relative;
-  }
-
-  .markdown-content ul > li::marker {
-    content: "▹ ";
-    color: #5eead4;
-    font-size: 1.2em;
-  }
-
-  .markdown-content ol {
-    counter-reset: item;
-  }
-
-  .markdown-content ol > li {
-    counter-increment: item;
-  }
-
-  .markdown-content ol > li::marker {
-    content: counter(item) ". ";
-    color: #3b82f6;
-    font-weight: 600;
-  }
-
-  .markdown-content ul ul,
-  .markdown-content ul ol,
-  .markdown-content ol ul,
-  .markdown-content ol ol {
-    margin-top: 0.75em;
-    margin-bottom: 0.75em;
-  }
-
-  /* Code blocks with glassmorphism effect */
-  .markdown-content pre {
-    background: linear-gradient(
-      135deg,
-      rgba(15, 23, 42, 0.9),
-      rgba(30, 41, 59, 0.8)
-    );
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(94, 234, 212, 0.2);
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    overflow-x: auto;
-    margin-top: 2em;
-    margin-bottom: 2em;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    position: relative;
-  }
-
-  .markdown-content pre::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #5eead4, #3b82f6);
-  }
-
-  .markdown-content code {
-    color: #e2e8f0;
-    font-size: 0.9em;
-    font-family:
-      "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo,
-      Monaco, Consolas, monospace;
-  }
-
-  /* Inline code with subtle glow */
-  .markdown-content :not(pre) > code {
-    background: linear-gradient(
-      135deg,
-      rgba(30, 41, 59, 0.8),
-      rgba(51, 65, 85, 0.6)
-    );
-    color: #5eead4;
-    padding: 0.25em 0.5em;
-    border-radius: 0.375rem;
-    font-size: 0.9em;
-    border: 1px solid rgba(94, 234, 212, 0.3);
-    box-shadow: 0 0 10px rgba(94, 234, 212, 0.1);
-  }
-
-  /* Beautiful blockquotes */
-  .markdown-content blockquote {
-    border-left: 4px solid;
-    border-image: linear-gradient(180deg, #5eead4, #3b82f6) 1;
-    padding-left: 1.5rem;
-    margin-top: 2em;
-    margin-bottom: 2em;
-    font-style: italic;
-    color: #cbd5e1;
-    background: linear-gradient(
-      135deg,
-      rgba(30, 41, 59, 0.5),
-      rgba(51, 65, 85, 0.3)
-    );
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    position: relative;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  .markdown-content blockquote::before {
-    content: '"';
-    position: absolute;
-    top: -10px;
-    left: 10px;
-    font-size: 4rem;
-    color: rgba(94, 234, 212, 0.2);
-    font-family: Georgia, serif;
-    line-height: 1;
-  }
-
-  .markdown-content blockquote p {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  /* Sleek tables */
-  .markdown-content table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin-top: 2em;
-    margin-bottom: 2em;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  }
-
-  .markdown-content th,
-  .markdown-content td {
-    border: 1px solid rgba(51, 65, 85, 0.5);
-    padding: 1rem;
-    text-align: left;
-  }
-
-  .markdown-content th {
-    background: linear-gradient(135deg, #1e293b, #334155);
-    color: #5eead4;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.875rem;
-    letter-spacing: 0.05em;
-  }
-
-  .markdown-content tbody tr {
-    background-color: rgba(30, 41, 59, 0.3);
-    transition: background-color 0.2s ease;
-  }
-
-  .markdown-content tbody tr:hover {
-    background-color: rgba(51, 65, 85, 0.5);
-  }
-
-  .markdown-content tr:nth-child(even) {
-    background-color: rgba(30, 41, 59, 0.5);
-  }
-
-  .markdown-content tr:nth-child(even):hover {
-    background-color: rgba(51, 65, 85, 0.6);
-  }
-
-  /* Gradient horizontal rule */
-  .markdown-content hr {
-    border: none;
-    height: 2px;
+    bottom: 0;
+    width: 60px;
+    height: 4px;
     background: linear-gradient(
       90deg,
-      transparent,
-      #5eead4,
-      #3b82f6,
-      transparent
-    );
-    margin-top: 3em;
-    margin-bottom: 3em;
+      #2dd4bf,
+      #0f766e
+    ); /* Teal 400 to Teal 700 */
+    border-radius: 2px;
   }
 
-  /* Images with hover effect */
-  .markdown-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 0.75rem;
+  .editorial-content h3 {
+    font-size: 1.5rem;
+    color: #2dd4bf; /* Teal 400 */
     margin-top: 2em;
+  }
+
+  .editorial-content p {
+    margin-bottom: 1.75em;
+  }
+
+  .editorial-content ul {
     margin-bottom: 2em;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
+    list-style-type: none;
+    padding-left: 0;
   }
 
-  .markdown-content img:hover {
-    transform: scale(1.02);
-    box-shadow: 0 12px 32px rgba(94, 234, 212, 0.3);
+  .editorial-content li {
+    position: relative;
+    padding-left: 1.5em;
+    margin-bottom: 0.75em;
   }
 
-  /* Enhanced strong text */
-  .markdown-content strong {
-    background: linear-gradient(135deg, #f1f5f9 0%, #5eead4 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .editorial-content li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #2dd4bf; /* Teal 400 */
+    font-weight: bold;
+    opacity: 0.8;
+  }
+
+  .editorial-content blockquote {
+    border-left: 4px solid #0f766e; /* Darker teal border */
+    background: rgba(15, 118, 110, 0.1); /* Subtle background */
+    padding: 1.5em 2em;
+    margin: 2.5em 0;
+    font-style: italic;
+    color: #94a3b8;
+    font-size: 1.1em;
+    border-radius: 0 12px 12px 0;
+  }
+
+  .editorial-content strong {
+    color: #f1f5f9; /* Near white for emphasis */
     font-weight: 700;
   }
 
-  /* Elegant emphasis */
-  .markdown-content em {
-    font-style: italic;
-    color: #cbd5e1;
+  .editorial-content a {
+    color: #2dd4bf;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(45, 212, 191, 0.3);
+    transition: all 0.2s;
+    font-weight: 500;
   }
 
-  /* Task lists with custom checkboxes */
-  .markdown-content input[type="checkbox"] {
-    appearance: none;
-    width: 1.25rem;
-    height: 1.25rem;
-    border: 2px solid #5eead4;
-    border-radius: 0.25rem;
-    margin-right: 0.5rem;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  .editorial-content a:hover {
+    border-bottom-color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.1);
   }
 
-  .markdown-content input[type="checkbox"]:checked {
-    background: linear-gradient(135deg, #5eead4, #3b82f6);
-    border-color: #3b82f6;
-  }
-
-  .markdown-content input[type="checkbox"]:checked::after {
-    content: "✓";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #0f172a;
-    font-weight: bold;
-    font-size: 0.875rem;
+  /* Image improvements within content */
+  .editorial-content img {
+    border-radius: 12px;
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    margin: 2em 0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 </style>
