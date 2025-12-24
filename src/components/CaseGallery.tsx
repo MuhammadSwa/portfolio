@@ -29,6 +29,7 @@ interface Case {
   outcome?: "excellent" | "good" | "satisfactory" | "needs-follow-up";
   followUp?: string;
   images: CaseImage[];
+  thumbnail?: string;
   featured?: boolean;
   tags?: string[];
 }
@@ -116,11 +117,10 @@ export default function CaseGallery(props: Props) {
             {(category) => (
               <button
                 onClick={() => setActiveCategory(category.id)}
-                class={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
-                  activeCategory() === category.id
+                class={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${activeCategory() === category.id
                     ? "bg-teal-500 text-white shadow-lg shadow-teal-500/25"
                     : "bg-slate-800 text-slate-300 border border-slate-700 hover:border-teal-500 hover:text-teal-400"
-                }`}
+                  }`}
               >
                 <span>{category.icon}</span>
                 <span>{category.name}</span>
@@ -226,7 +226,7 @@ function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
       {/* Image */}
       <div class="aspect-video bg-gradient-to-br from-slate-900 to-slate-800 relative overflow-hidden">
         <Show
-          when={props.case.images.length > 0}
+          when={props.case.thumbnail || props.case.images.length > 0}
           fallback={
             <div class="w-full h-full flex items-center justify-center text-slate-600">
               <svg
@@ -246,9 +246,10 @@ function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
           }
         >
           <img
-            src={props.case.images[0].src}
-            alt={props.case.images[0].alt}
+            src={props.case.thumbnail || props.case.images[0].src}
+            alt={props.case.images[0]?.alt || props.case.title}
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
           />
           <Show when={props.case.images.length > 1}>
             <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
@@ -332,7 +333,7 @@ function ListCard(props: { case: Case; formatDate: (date: string) => string }) {
       {/* Image */}
       <div class="w-32 sm:w-48 flex-shrink-0 bg-gradient-to-br from-slate-900 to-slate-800 relative overflow-hidden">
         <Show
-          when={props.case.images.length > 0}
+          when={props.case.thumbnail || props.case.images.length > 0}
           fallback={
             <div class="w-full h-full flex items-center justify-center text-slate-600">
               <svg
@@ -352,9 +353,10 @@ function ListCard(props: { case: Case; formatDate: (date: string) => string }) {
           }
         >
           <img
-            src={props.case.images[0].src}
-            alt={props.case.images[0].alt}
+            src={props.case.thumbnail || props.case.images[0].src}
+            alt={props.case.images[0]?.alt || props.case.title}
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
           />
         </Show>
       </div>

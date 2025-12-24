@@ -1,75 +1,110 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-import CaseGallery from '../components/CaseGallery';
-import HeroSection from '../components/HeroSection.astro';
-import CategoryFilter from '../components/CategoryFilter';
-import StatsSection from '../components/StatsSection.astro';
-import AboutSection from '../components/AboutSection.astro';
-import Footer from '../components/Footer.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import CaseGallery from "../components/CaseGallery";
+import HeroSection from "../components/HeroSection.astro";
+import CategoryFilter from "../components/CategoryFilter";
+import StatsSection from "../components/StatsSection.astro";
+import AboutSection from "../components/AboutSection.astro";
+import Footer from "../components/Footer.astro";
 
-const allCases = await getCollection('cases');
-const sortedCases = allCases.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+import { getImage } from "astro:assets";
+
+const allCases = await getCollection("cases");
+const sortedCases = allCases.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
 
 const allCategories = [
-  { id: 'all', name: 'All Cases', icon: '🦷' },
-  { id: 'restorations', name: 'Restorations', icon: '🔧' },
-  { id: 'endodontics', name: 'Endodontics', icon: '🔬' },
-  { id: 'fixed-prosthodontics', name: 'Fixed Prosthodontics', icon: '👑' },
-  { id: 'extractions', name: 'Extractions', icon: '🩹' },
-  { id: 'periodontics', name: 'Periodontics', icon: '🌿' },
-  { id: 'other', name: 'Other', icon: '📋' },
+  { id: "all", name: "All Cases", icon: "🦷" },
+  { id: "restorations", name: "Restorations", icon: "🔧" },
+  { id: "endodontics", name: "Endodontics", icon: "🔬" },
+  { id: "fixed-prosthodontics", name: "Fixed Prosthodontics", icon: "👑" },
+  { id: "extractions", name: "Extractions", icon: "🩹" },
+  { id: "periodontics", name: "Periodontics", icon: "🌿" },
+  { id: "other", name: "Other", icon: "📋" },
 ];
 
 // Serialize images for client components - image() schema returns ImageMetadata objects
-const casesData = sortedCases.map(c => ({
-  id: c.id,
-  ...c.data,
-  images: c.data.images.map((img: any) => ({
-    src: typeof img.src === 'string' ? img.src : img.src.src,
-    alt: img.alt,
-    stage: img.stage,
-  })),
-  date: c.data.date.toISOString(),
-}));
+const casesData = await Promise.all(
+  sortedCases.map(async (c) => {
+    // Determine thumbnail source: explicit thumbnail > first image > fallback
+    const thumbnailSource = c.data.thumbnail || c.data.images[0]?.src;
+    let thumbnailSrc = "";
+
+    if (thumbnailSource) {
+      try {
+        const optimizedThumb = await getImage({
+          src: thumbnailSource,
+          width: 600, // Optimized for grid view (approx 2x size for high DPI)
+          format: "webp",
+          quality: 80,
+        });
+        thumbnailSrc = optimizedThumb.src;
+      } catch (e) {
+        console.error(`Failed to optimize thumbnail for case ${c.id}`, e);
+        // Fallback to original src if optimization fails
+        thumbnailSrc =
+          typeof thumbnailSource === "string"
+            ? thumbnailSource
+            : thumbnailSource.src;
+      }
+    }
+
+    return {
+      id: c.id,
+      ...c.data,
+      thumbnail: thumbnailSrc,
+      images: c.data.images.map((img: any) => ({
+        src: typeof img.src === "string" ? img.src : img.src.src,
+        alt: img.alt,
+        stage: img.stage,
+      })),
+      date: c.data.date.toISOString(),
+    };
+  }),
+);
 
 // Calculate stats
 const totalCases = allCases.length;
-const categoryStats = allCategories.slice(1).map(cat => ({
+const categoryStats = allCategories.slice(1).map((cat) => ({
   ...cat,
-  count: allCases.filter(c => c.data.category === cat.id).length
+  count: allCases.filter((c) => c.data.category === cat.id).length,
 }));
 
 // Filter categories with at least one case for the gallery
 const categoriesWithCases = [
   allCategories[0], // Always include "All Cases"
-  ...allCategories.slice(1).filter(cat => 
-    allCases.some(c => c.data.category === cat.id)
-  )
+  ...allCategories
+    .slice(1)
+    .filter((cat) => allCases.some((c) => c.data.category === cat.id)),
 ];
 ---
 
 <BaseLayout title="Dr. Zahrawi | Dental Portfolio">
-    <HeroSection />
-    <StatsSection totalCases={totalCases} categoryStats={categoryStats} />
-    
-    <main id="cases" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-serif font-semibold text-slate-100 mb-4">
-          Clinical Case Gallery
-        </h2>
-        <p class="text-slate-400 max-w-2xl mx-auto">
-          Browse through documented cases showcasing various dental procedures with detailed notes on techniques, challenges, and outcomes.
-        </p>
-      </div>
-      
-      <CaseGallery 
-        client:load 
-        cases={casesData} 
-        categories={categoriesWithCases}
-      />
-    </main>
-    
-    <AboutSection />
-    <Footer />
+  <HeroSection />
+  <StatsSection totalCases={totalCases} categoryStats={categoryStats} />
+
+  <main id="cases" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+      <h2
+        class="text-3xl md:text-4xl font-serif font-semibold text-slate-100 mb-4"
+      >
+        Clinical Case Gallery
+      </h2>
+      <p class="text-slate-400 max-w-2xl mx-auto">
+        Browse through documented cases showcasing various dental procedures
+        with detailed notes on techniques, challenges, and outcomes.
+      </p>
+    </div>
+
+    <CaseGallery
+      client:load
+      cases={casesData}
+      categories={categoriesWithCases}
+    />
+  </main>
+
+  <AboutSection />
+  <Footer />
 </BaseLayout>

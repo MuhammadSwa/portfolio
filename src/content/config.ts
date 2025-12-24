@@ -25,6 +25,7 @@ const casesCollection = defineCollection({
     })),
     featured: z.boolean().default(false),
     tags: z.array(z.string()).optional(),
+    thumbnail: image().optional(),
   }),
 });
 
