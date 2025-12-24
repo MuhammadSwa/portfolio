@@ -1,11 +1,11 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection, render } from 'astro:content';
-import CaseDetail from '../../components/CaseDetail';
-import Footer from '../../components/Footer.astro';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+import CaseDetail from "../../components/CaseDetail";
+import Footer from "../../components/Footer.astro";
 
 export async function getStaticPaths() {
-  const cases = await getCollection('cases');
+  const cases = await getCollection("cases");
   return cases.map((caseEntry) => ({
     params: { slug: caseEntry.id },
     props: { caseEntry },
@@ -16,11 +16,31 @@ const { caseEntry } = Astro.props;
 const { Content } = await render(caseEntry);
 
 // Serialize images - image() schema returns ImageMetadata objects with src property
-const serializedImages = caseEntry.data.images.map((img: any) => ({
-  src: typeof img.src === 'string' ? img.src : img.src.src,
-  alt: img.alt,
-  stage: img.stage,
-}));
+// Serialize images - image() schema returns ImageMetadata objects with src property
+import { getImage } from "astro:assets";
+
+const serializedImages = await Promise.all(
+  caseEntry.data.images.map(async (img: any) => {
+    if (typeof img.src === "object") {
+      const optimized = await getImage({
+        src: img.src,
+        format: "webp",
+        quality: "high",
+      });
+      return {
+        src: optimized.src,
+        attributes: optimized.attributes,
+        alt: img.alt,
+        stage: img.stage,
+      };
+    }
+    return {
+      src: typeof img.src === "string" ? img.src : img.src.src,
+      alt: img.alt,
+      stage: img.stage,
+    };
+  }),
+);
 
 const caseData = {
   ...caseEntry.data,
@@ -30,179 +50,283 @@ const caseData = {
 };
 
 const categoryLabels: Record<string, string> = {
-  'restorations': 'Restorations',
-  'endodontics': 'Endodontics',
-  'fixed-prosthodontics': 'Fixed Prosthodontics',
-  'extractions': 'Extractions',
-  'periodontics': 'Periodontics',
-  'other': 'Other',
+  restorations: "Restorations",
+  endodontics: "Endodontics",
+  "fixed-prosthodontics": "Fixed Prosthodontics",
+  extractions: "Extractions",
+  periodontics: "Periodontics",
+  other: "Other",
 };
 
 const outcomeColors: Record<string, string> = {
-  'excellent': 'bg-emerald-900/50 text-emerald-300 border border-emerald-700',
-  'good': 'bg-blue-900/50 text-blue-300 border border-blue-700',
-  'satisfactory': 'bg-amber-900/50 text-amber-300 border border-amber-700',
-  'needs-follow-up': 'bg-orange-900/50 text-orange-300 border border-orange-700',
+  excellent: "bg-emerald-900/50 text-emerald-300 border border-emerald-700",
+  good: "bg-blue-900/50 text-blue-300 border border-blue-700",
+  satisfactory: "bg-amber-900/50 text-amber-300 border border-amber-700",
+  "needs-follow-up":
+    "bg-orange-900/50 text-orange-300 border border-orange-700",
 };
 ---
 
-<BaseLayout title={`${caseEntry.data.title} | Dr. Zahrawi`} description={`Dental case: ${caseEntry.data.title}`}>
-    <!-- Navigation -->
-    <nav class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-        <a href={import.meta.env.BASE_URL} class="flex items-center gap-2 text-slate-200 hover:text-teal-400 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            <span class="font-medium">Back to Portfolio</span>
-          </a>
-          <span class="text-sm text-slate-400">
-            {categoryLabels[caseEntry.data.category]}
-          </span>
-        </div>
+<BaseLayout
+  title={`${caseEntry.data.title} | Dr. Zahrawi`}
+  description={`Dental case: ${caseEntry.data.title}`}
+>
+  <!-- Navigation -->
+  <nav
+    class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a
+          href={import.meta.env.BASE_URL}
+          class="flex items-center gap-2 text-slate-200 hover:text-teal-400 transition-colors"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          <span class="font-medium">Back to Portfolio</span>
+        </a>
+        <span class="text-sm text-slate-400">
+          {categoryLabels[caseEntry.data.category]}
+        </span>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <!-- Case Header -->
-      <header class="mb-12">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <span class="px-3 py-1 bg-teal-900/50 text-teal-300 border border-teal-700 rounded-full text-sm font-medium">
-            {categoryLabels[caseEntry.data.category]}
-          </span>
-          {caseEntry.data.outcome && (
-            <span class={`px-3 py-1 rounded-full text-sm font-medium ${outcomeColors[caseEntry.data.outcome]}`}>
-              {caseEntry.data.outcome.charAt(0).toUpperCase() + caseEntry.data.outcome.slice(1).replace('-', ' ')}
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Case Header -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span
+          class="px-3 py-1 bg-teal-900/50 text-teal-300 border border-teal-700 rounded-full text-sm font-medium"
+        >
+          {categoryLabels[caseEntry.data.category]}
+        </span>
+        {
+          caseEntry.data.outcome && (
+            <span
+              class={`px-3 py-1 rounded-full text-sm font-medium ${outcomeColors[caseEntry.data.outcome]}`}
+            >
+              {caseEntry.data.outcome.charAt(0).toUpperCase() +
+                caseEntry.data.outcome.slice(1).replace("-", " ")}
             </span>
-          )}
-          {caseEntry.data.featured && (
+          )
+        }
+        {
+          caseEntry.data.featured && (
             <span class="px-3 py-1 bg-amber-900/50 text-amber-300 border border-amber-700 rounded-full text-sm font-medium">
               ⭐ Featured
             </span>
-          )}
-        </div>
-        
-        <h1 class="text-3xl md:text-4xl font-serif font-semibold text-slate-100 mb-4">
-          {caseEntry.data.title}
-        </h1>
-        
-        <div class="flex flex-wrap gap-4 text-sm text-slate-400">
-          <span class="flex items-center gap-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            {caseEntry.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </span>
-          {caseEntry.data.toothNumber && (
+          )
+        }
+      </div>
+
+      <h1
+        class="text-3xl md:text-4xl font-serif font-semibold text-slate-100 mb-4"
+      >
+        {caseEntry.data.title}
+      </h1>
+
+      <div class="flex flex-wrap gap-4 text-sm text-slate-400">
+        <span class="flex items-center gap-1">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            ></path>
+          </svg>
+          {
+            caseEntry.data.date.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          }
+        </span>
+        {
+          caseEntry.data.toothNumber && (
             <span class="flex items-center gap-1">
               🦷 Tooth #{caseEntry.data.toothNumber}
             </span>
-          )}
-          {caseEntry.data.patientAge && caseEntry.data.patientGender && (
+          )
+        }
+        {
+          caseEntry.data.patientAge && caseEntry.data.patientGender && (
             <span class="flex items-center gap-1">
               👤 {caseEntry.data.patientAge}yo {caseEntry.data.patientGender}
             </span>
-          )}
-        </div>
-      </header>
+          )
+        }
+      </div>
+    </header>
 
-      <!-- Image Gallery -->
-      <CaseDetail client:load caseData={caseData} />
+    <!-- Image Gallery -->
+    <CaseDetail client:load caseData={caseData} />
 
-      <!-- Case Information Grid -->
-      <div class="grid md:grid-cols-2 gap-6 mb-12">
-        {caseEntry.data.chiefComplaint && (
+    <!-- Case Information Grid -->
+    <div class="grid md:grid-cols-2 gap-6 mb-12">
+      {
+        caseEntry.data.chiefComplaint && (
           <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
-            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">Chief Complaint</h3>
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
+              Chief Complaint
+            </h3>
             <p class="text-slate-200">{caseEntry.data.chiefComplaint}</p>
           </div>
-        )}
-        
-        {caseEntry.data.diagnosis && (
+        )
+      }
+
+      {
+        caseEntry.data.diagnosis && (
           <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
-            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">Diagnosis</h3>
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
+              Diagnosis
+            </h3>
             <p class="text-slate-200">{caseEntry.data.diagnosis}</p>
           </div>
-        )}
-        
-        <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
-          <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">Treatment</h3>
-          <p class="text-slate-200">{caseEntry.data.treatment}</p>
-        </div>
-        
-        {caseEntry.data.materials && caseEntry.data.materials.length > 0 && (
+        )
+      }
+
+      <div
+        class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700"
+      >
+        <h3
+          class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2"
+        >
+          Treatment
+        </h3>
+        <p class="text-slate-200">{caseEntry.data.treatment}</p>
+      </div>
+
+      {
+        caseEntry.data.materials && caseEntry.data.materials.length > 0 && (
           <div class="bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700">
-            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">Materials Used</h3>
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
+              Materials Used
+            </h3>
             <ul class="space-y-1">
               {caseEntry.data.materials.map((material: string) => (
                 <li class="text-slate-200 flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
+                  <span class="w-1.5 h-1.5 bg-teal-500 rounded-full" />
                   {material}
                 </li>
               ))}
             </ul>
           </div>
-        )}
-      </div>
+        )
+      }
+    </div>
 
-
-      <!-- Learnings Section -->
-      {caseEntry.data.learnings && (
+    <!-- Learnings Section -->
+    {
+      caseEntry.data.learnings && (
         <div class="bg-emerald-900/30 rounded-xl p-6 mb-8 border border-emerald-700">
           <h3 class="text-lg font-semibold text-emerald-300 mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+              />
             </svg>
             Key Learnings
           </h3>
           <p class="text-emerald-200">{caseEntry.data.learnings}</p>
         </div>
-      )}
+      )
+    }
 
-      <!-- Follow-up -->
-      {caseEntry.data.followUp && (
+    <!-- Follow-up -->
+    {
+      caseEntry.data.followUp && (
         <div class="bg-blue-900/30 rounded-xl p-6 mb-8 border border-blue-700">
           <h3 class="text-lg font-semibold text-blue-300 mb-2 flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             Follow-up Plan
           </h3>
           <p class="text-blue-200">{caseEntry.data.followUp}</p>
         </div>
-      )}
+      )
+    }
 
-      <!-- Difficulties Section -->
-      {caseEntry.data.difficulties && caseEntry.data.difficulties.length > 0 && (
+    <!-- Difficulties Section -->
+    {
+      caseEntry.data.difficulties && caseEntry.data.difficulties.length > 0 && (
         <div class="bg-amber-900/30 rounded-xl p-6 mb-8 border border-amber-700">
           <h3 class="text-lg font-semibold text-amber-300 mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
             Challenges & Difficulties
           </h3>
           <ul class="space-y-2">
             {caseEntry.data.difficulties.map((difficulty: string) => (
               <li class="text-amber-200 flex items-start gap-2">
-                <span class="mt-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full flex-shrink-0"></span>
+                <span class="mt-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full flex-shrink-0" />
                 {difficulty}
               </li>
             ))}
           </ul>
         </div>
-      )}
+      )
+    }
 
-      <!-- Case Notes (Markdown Content) -->
-      <div class="bg-slate-800 rounded-xl p-6 md:p-8 shadow-sm border border-slate-700">
-        <div class="markdown-content">
-          <Content />
-        </div>
+    <!-- Case Notes (Markdown Content) -->
+    <div
+      class="bg-slate-800 rounded-xl p-6 md:p-8 shadow-sm border border-slate-700"
+    >
+      <div class="markdown-content">
+        <Content />
       </div>
+    </div>
 
-
-      <!-- Tags -->
-      {caseEntry.data.tags && caseEntry.data.tags.length > 0 && (
+    <!-- Tags -->
+    {
+      caseEntry.data.tags && caseEntry.data.tags.length > 0 && (
         <div class="mt-8 flex flex-wrap gap-2">
           {caseEntry.data.tags.map((tag: string) => (
             <span class="px-3 py-1 bg-slate-800 text-slate-300 border border-slate-700 rounded-full text-sm">
@@ -210,10 +334,11 @@ const outcomeColors: Record<string, string> = {
             </span>
           ))}
         </div>
-      )}
-    </main>
-    
-    <Footer />
+      )
+    }
+  </main>
+
+  <Footer />
 </BaseLayout>
 
 <style is:global>
@@ -221,7 +346,9 @@ const outcomeColors: Record<string, string> = {
     color: #e2e8f0;
     font-size: 1.125rem;
     line-height: 1.75;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+      Arial, sans-serif;
   }
 
   /* Headings with gradient accents */
@@ -280,7 +407,7 @@ const outcomeColors: Record<string, string> = {
   }
 
   .markdown-content a::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 2px;
@@ -320,7 +447,7 @@ const outcomeColors: Record<string, string> = {
   }
 
   .markdown-content ul > li::marker {
-    content: '▹ ';
+    content: "▹ ";
     color: #5eead4;
     font-size: 1.2em;
   }
@@ -334,7 +461,7 @@ const outcomeColors: Record<string, string> = {
   }
 
   .markdown-content ol > li::marker {
-    content: counter(item) '. ';
+    content: counter(item) ". ";
     color: #3b82f6;
     font-weight: 600;
   }
@@ -349,7 +476,11 @@ const outcomeColors: Record<string, string> = {
 
   /* Code blocks with glassmorphism effect */
   .markdown-content pre {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8));
+    background: linear-gradient(
+      135deg,
+      rgba(15, 23, 42, 0.9),
+      rgba(30, 41, 59, 0.8)
+    );
     backdrop-filter: blur(10px);
     border: 1px solid rgba(94, 234, 212, 0.2);
     border-radius: 0.75rem;
@@ -362,7 +493,7 @@ const outcomeColors: Record<string, string> = {
   }
 
   .markdown-content pre::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -374,12 +505,18 @@ const outcomeColors: Record<string, string> = {
   .markdown-content code {
     color: #e2e8f0;
     font-size: 0.9em;
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family:
+      "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo,
+      Monaco, Consolas, monospace;
   }
 
   /* Inline code with subtle glow */
   .markdown-content :not(pre) > code {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.6));
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.8),
+      rgba(51, 65, 85, 0.6)
+    );
     color: #5eead4;
     padding: 0.25em 0.5em;
     border-radius: 0.375rem;
@@ -397,7 +534,11 @@ const outcomeColors: Record<string, string> = {
     margin-bottom: 2em;
     font-style: italic;
     color: #cbd5e1;
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(51, 65, 85, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.5),
+      rgba(51, 65, 85, 0.3)
+    );
     padding: 1.5rem;
     border-radius: 0.5rem;
     position: relative;
@@ -469,7 +610,13 @@ const outcomeColors: Record<string, string> = {
   .markdown-content hr {
     border: none;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #5eead4, #3b82f6, transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #5eead4,
+      #3b82f6,
+      transparent
+    );
     margin-top: 3em;
     margin-bottom: 3em;
   }
@@ -482,7 +629,9 @@ const outcomeColors: Record<string, string> = {
     margin-top: 2em;
     margin-bottom: 2em;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   .markdown-content img:hover {
@@ -524,7 +673,7 @@ const outcomeColors: Record<string, string> = {
   }
 
   .markdown-content input[type="checkbox"]:checked::after {
-    content: '✓';
+    content: "✓";
     position: absolute;
     top: 50%;
     left: 50%;

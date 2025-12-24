@@ -4,6 +4,7 @@ interface CaseImage {
   src: string;
   alt: string;
   stage?: 'before' | 'during' | 'after' | 'xray' | 'other';
+  attributes?: Record<string, any>;
 }
 
 interface CaseData {
@@ -127,6 +128,7 @@ export default function CaseDetail(props: Props) {
             <img
               src={currentImage().src}
               alt={currentImage().alt}
+              {...currentImage().attributes}
               class="max-w-full max-h-full object-contain drop-shadow-xl cursor-zoom-in transition-transform duration-300 hover:scale-[1.01]"
               onClick={() => openLightbox(selectedImageIndex())}
             />
@@ -218,6 +220,7 @@ export default function CaseDetail(props: Props) {
                     <img
                       src={image.src}
                       alt={image.alt}
+                      {...image.attributes}
                       class="absolute inset-0 w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -259,6 +262,7 @@ export default function CaseDetail(props: Props) {
             <img
               src={currentImage().src}
               alt={currentImage().alt}
+              {...currentImage().attributes}
               class="max-w-full max-h-full object-contain shadow-2xl transition-opacity duration-300"
               onClick={(e) => e.stopPropagation()}
             />
