@@ -28,6 +28,12 @@ export default defineConfig({
         cssVariable: "--font-playfair-display",
         weights: ["600"],
       },
+      {
+        provider: fontProviders.google(),
+        name: "Cedarville Cursive",
+        cssVariable: "--font-cedarville",
+        weights: ["400"],
+      },
     ],
   },
 });
