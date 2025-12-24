@@ -75,6 +75,14 @@ export default function CaseGallery(props: Props) {
     });
   });
 
+  const categoryCounts = createMemo(() => {
+    const counts: Record<string, number> = {};
+    props.cases.forEach((c) => {
+      counts[c.category] = (counts[c.category] || 0) + 1;
+    });
+    return counts;
+  });
+
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-US", {
       year: "numeric",
@@ -117,13 +125,23 @@ export default function CaseGallery(props: Props) {
             {(category) => (
               <button
                 onClick={() => setActiveCategory(category.id)}
-                class={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${activeCategory() === category.id
-                    ? "bg-teal-500 text-white shadow-lg shadow-teal-500/25"
-                    : "bg-slate-800 text-slate-300 border border-slate-700 hover:border-teal-500 hover:text-teal-400"
+                class={`group px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${activeCategory() === category.id
+                  ? "bg-teal-500 text-white shadow-lg shadow-teal-500/25"
+                  : "bg-slate-800 text-slate-300 border border-slate-700 hover:border-teal-500 hover:text-teal-400"
                   }`}
               >
                 <span>{category.icon}</span>
                 <span>{category.name}</span>
+                <span
+                  class={`ml-1 text-xs px-2 py-0.5 rounded-full transition-colors ${activeCategory() === category.id
+                    ? "bg-white/20 text-white"
+                    : "bg-slate-700 text-slate-400 group-hover:bg-slate-600 group-hover:text-slate-200"
+                    }`}
+                >
+                  {category.id === "all"
+                    ? props.cases.length
+                    : categoryCounts()[category.id] || 0}
+                </span>
               </button>
             )}
           </For>

@@ -3,8 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import CaseGallery from "../components/CaseGallery";
 import HeroSection from "../components/HeroSection.astro";
-import CategoryFilter from "../components/CategoryFilter";
-import StatsSection from "../components/StatsSection.astro";
+
 import AboutSection from "../components/AboutSection.astro";
 import Footer from "../components/Footer.astro";
 
@@ -66,11 +65,6 @@ const casesData = await Promise.all(
 );
 
 // Calculate stats
-const totalCases = allCases.length;
-const categoryStats = allCategories.slice(1).map((cat) => ({
-  ...cat,
-  count: allCases.filter((c) => c.data.category === cat.id).length,
-}));
 
 // Filter categories with at least one case for the gallery
 const categoriesWithCases = [
@@ -83,7 +77,6 @@ const categoriesWithCases = [
 
 <BaseLayout title="Dr. Zahrawi | Dental Portfolio">
   <HeroSection />
-  <StatsSection totalCases={totalCases} categoryStats={categoryStats} />
 
   <main id="cases" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <div class="text-center mb-12">
@@ -91,7 +84,7 @@ const categoriesWithCases = [
         class="text-3xl md:text-4xl font-serif font-semibold text-slate-100 mb-4"
       >
         Clinical Case Gallery
-      </h2>ddd
+      </h2>
       <p class="text-slate-400 max-w-2xl mx-auto">
         Browse through documented cases showcasing various dental procedures
         with detailed notes on techniques, challenges, and outcomes.
