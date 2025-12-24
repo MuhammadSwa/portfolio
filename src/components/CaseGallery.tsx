@@ -220,7 +220,7 @@ export default function CaseGallery(props: Props) {
 function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
   return (
     <a
-      href={`${import.meta.env.BASE_URL}/cases/${props.case.id}`}
+      href={`${import.meta.env.BASE_URL}cases/${props.case.id}`}
       class="group bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-700 hover:shadow-xl hover:shadow-teal-500/20 hover:border-teal-500 transition-all duration-300 hover:-translate-y-1"
     >
       {/* Image */}
@@ -326,7 +326,7 @@ function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
 function ListCard(props: { case: Case; formatDate: (date: string) => string }) {
   return (
     <a
-      href={`${import.meta.env.BASE_URL}/cases/${props.case.id}`}
+      href={`${import.meta.env.BASE_URL}cases/${props.case.id}`}
       class="group bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-700 hover:shadow-lg hover:shadow-teal-500/20 hover:border-teal-500 transition-all duration-300 flex"
     >
       {/* Image */}
