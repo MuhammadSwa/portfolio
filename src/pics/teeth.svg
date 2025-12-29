@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 48 48" id="teeth">
+  <symbol id="New_Symbol_14" viewBox="-6.5 -6.5 13 13">
+    <path d="M0-6c2.2 0 4.1 1.5 4.7 3.5C6.3-2.5 6.4 0 5 0v1c0 2.8-2.2 5-5 5s-5-2.2-5-5V0c-1.4 0-1.3-2.5.2-2.5C-4.1-4.5-2.2-6 0-6z" style="fill:#ffd4c3;stroke:#504b46;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></path>
+    <circle cx="-1.6" cy="-.1" r=".1" style="fill:#ffc258"></circle>
+    <path d="M-1.6.5c-.3 0-.6-.3-.6-.6s.2-.7.6-.7c.3 0 .6.3.6.7s-.3.6-.6.6z" style="fill:#4f4b45"></path>
+    <circle cx="1.6" cy="-.1" r=".1" style="fill:#ffc258"></circle>
+    <path d="M1.6.5C1.3.5 1 .2 1-.1s.3-.6.6-.6.6.3.6.6-.2.6-.6.6z" style="fill:#4f4b45"></path>
+    <circle cx="-3" cy="-1.5" r=".5" style="fill:#fabfa5"></circle>
+    <circle cx="3" cy="-1.5" r=".5" style="fill:#fabfa5"></circle>
+    <path d="M-1.2-3c.8-.5 1.7-.5 2.5 0" style="fill:none;stroke:#504b46;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></path>
+  </symbol>
+  <g id="Icons">
+    <g id="XMLID_673_">
+      <circle id="XMLID_773_" cx="24" cy="21.5" r="20" style="fill:#ffe500"></circle>
+      <path id="XMLID_770_" d="M24 1.5c-11 0-20 9-20 20s9 20 20 20 20-9 20-20-9-20-20-20zm0 37c-10.1 0-18.2-8.2-18.2-18.2C5.8 10.2 13.9 2 24 2s18.2 8.2 18.2 18.2c.1 10.2-8.1 18.3-18.2 18.3z" style="fill:#ebcb00"></path>
+      <ellipse id="XMLID_769_" cx="24" cy="5.5" rx="6" ry="1.5" style="fill:#fff48c"></ellipse>
+      <ellipse id="XMLID_768_" cx="24" cy="45" rx="16" ry="1.5" style="opacity:.15;fill:#45413c"></ellipse>
+      <circle id="XMLID_767_" cx="24" cy="21.5" r="20" style="fill:none;stroke:#45413c;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></circle>
+      <ellipse id="XMLID_766_" cx="36" cy="26.5" rx="2.5" ry="1.5" style="fill:#ffaa54"></ellipse>
+      <ellipse id="XMLID_765_" cx="12" cy="26.5" rx="2.5" ry="1.5" style="fill:#ffaa54"></ellipse>
+      <g id="XMLID_758_">
+        <path id="XMLID_764_" d="M24 36.6c9.2 0 10.4-3.8 9.9-7-.3-1.9-2.5-3.1-4.6-2.4-1.5.5-3.4.8-5.3.8s-3.8-.3-5.3-.8c-2-.7-4.2.5-4.6 2.4-.5 3.2.7 7 9.9 7z" style="fill:#fff;stroke:#45413c;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></path>
+        <g id="XMLID_759_">
+          <path id="XMLID_763_" d="M34 30.3c-1 .5-2.5 1-4.6 1.4-1.5.2-3.2.4-5.4.4s-3.9-.2-5.4-.4c-2.1-.4-3.6-.9-4.6-1.4" style="fill:none;stroke:#45413c;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></path>
+          <path id="XMLID_762_" d="M19.3 27.4l-.7 4.3-.6 4.1" style="fill:none;stroke:#45413c;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></path>
+          <path id="XMLID_761_" d="M24 36.6v-8.5" style="fill:none;stroke:#45413c;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></path>
+          <path id="XMLID_760_" d="M28.7 27.4l.7 4.3.6 4.1" style="fill:none;stroke:#45413c;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></path>
+        </g>
+      </g>
+      <circle id="XMLID_757_" cx="13.5" cy="20.5" r="1" style="fill:#45413c;stroke:#45413c;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></circle>
+      <circle id="XMLID_756_" cx="34.5" cy="20.5" r="1" style="fill:#45413c;stroke:#45413c;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"></circle>
+    </g>
+  </g>
+</svg>
