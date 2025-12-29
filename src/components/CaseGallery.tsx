@@ -96,87 +96,87 @@ export default function CaseGallery(props: Props) {
       {/* Controls Header */}
       <div class="mb-12 space-y-8">
         {/* Search & Layout Toggles */}
-        <div class="flex flex-col gap-6 items-center w-full">
-          <div class="relative w-full max-w-2xl group">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg
-                class="w-5 h-5 text-slate-500 group-focus-within:text-teal-400 transition-colors"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-            <input
-              type="text"
-              placeholder="Search detailed cases..."
-              value={searchQuery()}
-              onInput={(e) => setSearchQuery(e.currentTarget.value)}
-              class="w-full pl-11 pr-4 py-3 rounded-full bg-slate-900/50 border border-slate-700/50 focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-800 transition-all text-slate-200 placeholder-slate-500 backdrop-blur-sm"
-            />
-          </div>
-
-          <div class="flex items-center gap-4 justify-center">
-            <p class="text-slate-500 text-sm">
-              <span class="font-medium text-slate-300">
-                {filteredCases().length}
-              </span>{" "}
-              cases found
-            </p>
-            {/* <div class="flex p-1 bg-slate-900/50 backdrop-blur-sm rounded-lg border border-slate-700/50">
-              <button
-                onClick={() => setViewMode("grid")}
-                class={`p-2 rounded-md transition-all ${viewMode() === "grid"
-                  ? "bg-slate-700 text-teal-400 shadow-sm"
-                  : "text-slate-400 hover:text-slate-200"
-                  }`}
-                title="Grid View"
-              >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                  />
-                </svg>
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                class={`p-2 rounded-md transition-all ${viewMode() === "list"
-                  ? "bg-slate-700 text-teal-400 shadow-sm"
-                  : "text-slate-400 hover:text-slate-200"
-                  }`}
-                title="List View"
-              >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </button>
-            </div> */}
-          </div>
-        </div>
+        {/* <div class="flex flex-col gap-6 items-center w-full"> */}
+        {/*   <div class="relative w-full max-w-2xl group"> */}
+        {/*     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"> */}
+        {/*       <svg */}
+        {/*         class="w-5 h-5 text-slate-500 group-focus-within:text-teal-400 transition-colors" */}
+        {/*         fill="none" */}
+        {/*         stroke="currentColor" */}
+        {/*         viewBox="0 0 24 24" */}
+        {/*       > */}
+        {/*         <path */}
+        {/*           stroke-linecap="round" */}
+        {/*           stroke-linejoin="round" */}
+        {/*           stroke-width="2" */}
+        {/*           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" */}
+        {/*         /> */}
+        {/*       </svg> */}
+        {/*     </div> */}
+        {/*     <input */}
+        {/*       type="text" */}
+        {/*       placeholder="Search detailed cases..." */}
+        {/*       value={searchQuery()} */}
+        {/*       onInput={(e) => setSearchQuery(e.currentTarget.value)} */}
+        {/*       class="w-full pl-11 pr-4 py-3 rounded-full bg-slate-900/50 border border-slate-700/50 focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-800 transition-all text-slate-200 placeholder-slate-500 backdrop-blur-sm" */}
+        {/*     /> */}
+        {/*   </div> */}
+        {/**/}
+        {/*   <div class="flex items-center gap-4 justify-center"> */}
+        {/*     <p class="text-slate-500 text-sm"> */}
+        {/*       <span class="font-medium text-slate-300"> */}
+        {/*         {filteredCases().length} */}
+        {/*       </span>{" "} */}
+        {/*       cases found */}
+        {/*     </p> */}
+        {/*     {/* <div class="flex p-1 bg-slate-900/50 backdrop-blur-sm rounded-lg border border-slate-700/50"> */}
+        {/*       <button */}
+        {/*         onClick={() => setViewMode("grid")} */}
+        {/*         class={`p-2 rounded-md transition-all ${viewMode() === "grid" */}
+        {/*           ? "bg-slate-700 text-teal-400 shadow-sm" */}
+        {/*           : "text-slate-400 hover:text-slate-200" */}
+        {/*           }`} */}
+        {/*         title="Grid View" */}
+        {/*       > */}
+        {/*         <svg */}
+        {/*           class="w-5 h-5" */}
+        {/*           fill="none" */}
+        {/*           stroke="currentColor" */}
+        {/*           viewBox="0 0 24 24" */}
+        {/*         > */}
+        {/*           <path */}
+        {/*             stroke-linecap="round" */}
+        {/*             stroke-linejoin="round" */}
+        {/*             stroke-width="2" */}
+        {/*             d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" */}
+        {/*           /> */}
+        {/*         </svg> */}
+        {/*       </button> */}
+        {/*       <button */}
+        {/*         onClick={() => setViewMode("list")} */}
+        {/*         class={`p-2 rounded-md transition-all ${viewMode() === "list" */}
+        {/*           ? "bg-slate-700 text-teal-400 shadow-sm" */}
+        {/*           : "text-slate-400 hover:text-slate-200" */}
+        {/*           }`} */}
+        {/*         title="List View" */}
+        {/*       > */}
+        {/*         <svg */}
+        {/*           class="w-5 h-5" */}
+        {/*           fill="none" */}
+        {/*           stroke="currentColor" */}
+        {/*           viewBox="0 0 24 24" */}
+        {/*         > */}
+        {/*           <path */}
+        {/*             stroke-linecap="round" */}
+        {/*             stroke-linejoin="round" */}
+        {/*             stroke-width="2" */}
+        {/*             d="M4 6h16M4 12h16M4 18h16" */}
+        {/*           /> */}
+        {/*         </svg> */}
+        {/*       </button> */}
+        {/*     </div> */}
+        {/*   </div> */}
+        {/* </div> */}
 
         {/* Category Pills */}
         <div class="flex flex-wrap gap-2 justify-center">
@@ -184,18 +184,20 @@ export default function CaseGallery(props: Props) {
             {(category) => (
               <button
                 onClick={() => setActiveCategory(category.id)}
-                class={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border flex items-center gap-2 ${activeCategory() === category.id
-                  ? "bg-teal-500/10 text-teal-400 border-teal-500/50 shadow-[0_0_15px_rgba(20,184,166,0.15)]"
-                  : "bg-slate-800/30 text-slate-400 border-slate-700/50 hover:border-slate-500 hover:text-slate-200 hover:bg-slate-800"
-                  }`}
+                class={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border flex items-center gap-2 ${
+                  activeCategory() === category.id
+                    ? "bg-teal-500/10 text-teal-400 border-teal-500/50 shadow-[0_0_15px_rgba(20,184,166,0.15)]"
+                    : "bg-slate-800/30 text-slate-400 border-slate-700/50 hover:border-slate-500 hover:text-slate-200 hover:bg-slate-800"
+                }`}
               >
                 <span class="opacity-75">{category.icon}</span>
                 <span>{category.name}</span>
                 <span
-                  class={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full transition-colors ${activeCategory() === category.id
-                    ? "bg-teal-500/20 text-teal-300"
-                    : "bg-slate-700/50 text-slate-500"
-                    }`}
+                  class={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full transition-colors ${
+                    activeCategory() === category.id
+                      ? "bg-teal-500/20 text-teal-300"
+                      : "bg-slate-700/50 text-slate-500"
+                  }`}
                 >
                   {category.id === "all"
                     ? props.cases.length
@@ -213,24 +215,33 @@ export default function CaseGallery(props: Props) {
         fallback={
           <div class="flex flex-col items-center justify-center py-24 text-center border border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
             <div class="bg-slate-800/50 p-4 rounded-full mb-4">
-              <svg class="w-8 h-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                class="w-8 h-8 text-slate-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </div>
             <h3 class="text-xl font-medium text-slate-200 mb-2">
               No cases found
             </h3>
             <p class="text-slate-500 max-w-xs mx-auto">
-              We couldn't find any cases matching your search. Try different keywords or filters.
+              We couldn't find any cases matching your search. Try different
+              keywords or filters.
             </p>
           </div>
         }
       >
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <For each={filteredCases()}>
-            {(caseItem) => (
-              <GridCard case={caseItem} formatDate={formatDate} />
-            )}
+            {(caseItem) => <GridCard case={caseItem} formatDate={formatDate} />}
           </For>
         </div>
       </Show>
@@ -248,7 +259,7 @@ function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
       <Show when={props.case.featured}>
         <div class="absolute top-3 left-3 z-20">
           <div class="bg-amber-500/10 backdrop-blur-md border border-amber-500/20 text-amber-300 text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-            <span>⭐</span> Featured
+            <span>⭐</span>
           </div>
         </div>
       </Show>
@@ -259,8 +270,18 @@ function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
           when={props.case.thumbnail || props.case.images.length > 0}
           fallback={
             <div class="absolute inset-0 flex items-center justify-center text-slate-600">
-              <svg class="w-12 h-12 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                class="w-12 h-12 opacity-20"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
             </div>
           }
@@ -290,7 +311,9 @@ function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
             {categoryLabels[props.case.category] || props.case.category}
           </span>
           <span class="text-slate-600">•</span>
-          <span class="text-slate-500">{props.formatDate(props.case.date)}</span>
+          <span class="text-slate-500">
+            {props.formatDate(props.case.date)}
+          </span>
         </div>
 
         <h3 class="font-serif text-lg font-semibold text-slate-100 mb-2 leading-tight group-hover:text-teal-300 transition-colors">
@@ -304,7 +327,9 @@ function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
         <div class="pt-4 border-t border-slate-800 flex items-center justify-between mt-auto">
           <div class="flex items-center gap-2">
             <Show when={props.case.outcome}>
-              <span class={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-semibold rounded ${outcomeColors[props.case.outcome!]}`}>
+              <span
+                class={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-semibold rounded ${outcomeColors[props.case.outcome!]}`}
+              >
                 {props.case.outcome?.replace("-", " ")}
               </span>
             </Show>
@@ -336,7 +361,19 @@ function ListCard(props: { case: Case; formatDate: (date: string) => string }) {
           when={props.case.thumbnail || props.case.images.length > 0}
           fallback={
             <div class="w-full h-full bg-slate-800 flex items-center justify-center">
-              <svg class="w-8 h-8 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              <svg
+                class="w-8 h-8 text-slate-700"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
             </div>
           }
         >
@@ -357,7 +394,9 @@ function ListCard(props: { case: Case; formatDate: (date: string) => string }) {
             {categoryLabels[props.case.category] || props.case.category}
           </span>
           <Show when={props.case.featured}>
-            <span class="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/20 px-1.5 rounded">Featured</span>
+            <span class="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/20 px-1.5 rounded">
+              Featured
+            </span>
           </Show>
         </div>
 
@@ -376,7 +415,19 @@ function ListCard(props: { case: Case; formatDate: (date: string) => string }) {
           </Show>
           <Show when={props.case.images.length > 0}>
             <span class="flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
               {props.case.images.length}
             </span>
           </Show>
@@ -385,7 +436,19 @@ function ListCard(props: { case: Case; formatDate: (date: string) => string }) {
 
       {/* Arrow */}
       <div class="pr-6 flex items-center justify-center text-slate-700 group-hover:text-teal-400 transition-colors">
-        <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        <svg
+          class="w-6 h-6 transform group-hover:translate-x-1 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
       </div>
     </a>
   );
