@@ -52,7 +52,8 @@ body {
   line-height: 1.75;
 }
 
-.prose ul, .prose ol {
+.prose ul,
+.prose ol {
   margin-bottom: 1rem;
   padding-left: 1.5rem;
 }
@@ -130,6 +131,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -145,6 +147,7 @@ body {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -154,4 +157,72 @@ body {
   background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
+}
+
+/* ================================
+   Astro View Transitions
+   ================================ */
+
+/* Simple fade for page transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.15s;
+  animation-timing-function: ease-out;
+}
+
+/* Morph animation for matching elements (like case titles) */
+::view-transition-group(*) {
+  animation-duration: 0.2s;
+  animation-timing-function: ease-out;
+}
+
+/* Loading indicator styles */
+.page-loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #14b8a6, transparent);
+  z-index: 9999;
+  animation: loading-slide 1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes loading-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Show loading state on body during navigation */
+html.is-changing {
+  cursor: progress;
+}
+
+html.is-changing body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #14b8a6, #2dd4bf, #14b8a6, transparent);
+  background-size: 200% 100%;
+  z-index: 9999;
+  animation: loading-progress 0.8s ease-in-out infinite;
+}
+
+@keyframes loading-progress {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }

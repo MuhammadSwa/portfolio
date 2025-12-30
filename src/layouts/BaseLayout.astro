@@ -1,26 +1,50 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = "Professional dental portfolio showcasing clinical cases in restorations, endodontics, and fixed prosthodontics" } = Astro.props;
-
+const {
+  title,
+  description = "Professional dental portfolio showcasing clinical cases in restorations, endodontics, and fixed prosthodontics",
+} = Astro.props;
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href=`${import.meta.env.BASE_URL}favicon.svg` />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href=`${import.meta.env.BASE_URL}favicon.svg`
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <ClientRouter />
     {/* Fonts are now loaded via Astro experimental fonts API */}
   </head>
   <body class="bg-slate-950 text-slate-100 antialiased">
     <slot />
   </body>
 </html>
+
+<script>
+  // Show loading indicator during page transitions
+  document.addEventListener("astro:before-preparation", () => {
+    document.documentElement.classList.add("is-changing");
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    document.documentElement.classList.remove("is-changing");
+  });
+
+  // Also handle page load complete
+  document.addEventListener("astro:page-load", () => {
+    document.documentElement.classList.remove("is-changing");
+  });
+</script>

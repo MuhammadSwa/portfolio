@@ -184,20 +184,18 @@ export default function CaseGallery(props: Props) {
             {(category) => (
               <button
                 onClick={() => setActiveCategory(category.id)}
-                class={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border flex items-center gap-2 ${
-                  activeCategory() === category.id
+                class={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border flex items-center gap-2 ${activeCategory() === category.id
                     ? "bg-teal-500/10 text-teal-400 border-teal-500/50 shadow-[0_0_15px_rgba(20,184,166,0.15)]"
                     : "bg-slate-800/30 text-slate-400 border-slate-700/50 hover:border-slate-500 hover:text-slate-200 hover:bg-slate-800"
-                }`}
+                  }`}
               >
                 <span class="opacity-75">{category.icon}</span>
                 <span>{category.name}</span>
                 <span
-                  class={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full transition-colors ${
-                    activeCategory() === category.id
+                  class={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full transition-colors ${activeCategory() === category.id
                       ? "bg-teal-500/20 text-teal-300"
                       : "bg-slate-700/50 text-slate-500"
-                  }`}
+                    }`}
                 >
                   {category.id === "all"
                     ? props.cases.length
@@ -316,7 +314,10 @@ function GridCard(props: { case: Case; formatDate: (date: string) => string }) {
           </span>
         </div>
 
-        <h3 class="font-serif text-lg font-semibold text-slate-100 mb-2 leading-tight group-hover:text-teal-300 transition-colors">
+        <h3
+          class="font-serif text-lg font-semibold text-slate-100 mb-2 leading-tight group-hover:text-teal-300 transition-colors"
+          style={{ "view-transition-name": `case-title-${props.case.id}` }}
+        >
           {props.case.title}
         </h3>
 
