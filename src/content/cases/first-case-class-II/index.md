@@ -15,12 +15,12 @@ materials:
   - "Universal Bonding Agent (Selective Etch)"
   - "A2 Shade Nanohybrid Composite"
   - "Flowable Composite (Liner)"
-difficulties:
-  - "Achieving tight interproximal contacts while restoring two adjacent surfaces."
-  - "Properly seating the wedge without distorting the sectional matrix."
-  - "Grade 1 subgingival margin"
-learnings: "Utilized a saddle matrix for Grade 1 Deep Margin Elevation to create a supragingival seal.Transitioned to a sectional matrix for final contouring. This successfully raised the gingival floor to a supragingival level, creating a stable platform that allowed the sectional matrix to seat properly and achieve a predictable hermetic seal."
-followUp: "The patient reported mild transient post-operative sensitivity immediately following the resolution of local anesthesia; however, symptoms diminished progressively over the subsequent days. Interproximal contacts were verified as anatomically correct and floss-tight."
+# difficulties:
+#   - "Achieving tight interproximal contacts while restoring two adjacent surfaces."
+#   - "Properly seating the wedge without distorting the sectional matrix."
+#   - "Grade 1 subgingival margin"
+# learnings: "Utilized a saddle matrix for Grade 1 Deep Margin Elevation to create a supragingival seal.Transitioned to a sectional matrix for final contouring. This successfully raised the gingival floor to a supragingival level, creating a stable platform that allowed the sectional matrix to seat properly and achieve a predictable hermetic seal."
+# followUp: "The patient reported mild transient post-operative sensitivity immediately following the resolution of local anesthesia; however, symptoms diminished progressively over the subsequent days. Interproximal contacts were verified as anatomically correct and floss-tight."
 images:
   - src: "./pre-operative.jpg"
     alt: "Pre-operative view showing marginal ridge breakdown."
@@ -31,7 +31,7 @@ images:
   - src: "./post-operative.jpg"
     alt: "Final restorations showing restored anatomy and proper marginal ridge heights."
     stage: "after"
-featured: true
+featured: false
 tags:
   - "class-II"
   - "back-to-back"
